@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#101923" />
+  <meta name="description" content="WARZONE 2D — tactical online arena." />
+  <title>WARZONE 2D</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">W</span><div><b>WARZONE <em>2D</em></b><small>TACTICAL ARENA</small></div></div>
+      <div class="top-stats"><span id="connection" class="pill offline">● OFFLINE</span><span class="pill">SEASON 01</span></div>
+    </header>
+
+    <main>
+      <section id="lobby" class="lobby">
+        <div class="hero">
+          <div class="eyebrow">MULTIPLAYER COMBAT ARENA</div>
+          <h1>ENTER THE<br/><span>WARZONE.</span></h1>
+          <p>Bangun strategi, kuasai arena, dan rebut kemenangan bersama timmu.</p>
+          <div class="hero-actions">
+            <button id="quickPlay" class="btn primary">▶ QUICK PLAY</button>
+            <button id="createRoom" class="btn secondary">＋ BUAT ROOM</button>
+          </div>
+        </div>
+        <div class="lobby-grid">
+          <article class="panel profile-panel">
+            <div class="panel-head"><span>IDENTITAS</span><span class="tiny">PLAYER CARD</span></div>
+            <label>Nama pemain</label>
+            <input id="playerName" maxlength="16" value="Soldier" placeholder="Nama pemain"/>
+            <label>Pilih kelas</label>
+            <div class="class-picker">
+              <button class="class-option selected" data-class="assault"><b>⚔</b><span>ASSAULT</span><small>Seimbang</small></button>
+              <button class="class-option" data-class="scout"><b>➤</b><span>SCOUT</span><small>Cepat</small></button>
+              <button class="class-option" data-class="heavy"><b>⬟</b><span>HEAVY</span><small>HP tinggi</small></button>
+            </div>
+            <label>Mode permainan</label>
+            <select id="mode"><option value="tdm">Team Deathmatch</option><option value="control">Zone Control</option><option value="survival">Survival vs Bots</option></select>
+          </article>
+          <article class="panel online-panel">
+            <div class="panel-head"><span>ONLINE BATTLE</span><span class="tiny">ROOM SYSTEM</span></div>
+            <label>Kode room</label>
+            <div class="join-row"><input id="roomCode" maxlength="8" placeholder="Contoh: A7K2Q"/><button id="joinRoom" class="btn secondary">JOIN</button></div>
+            <div class="divider"></div>
+            <div class="feature-line"><span class="feature-icon">◎</span><div><b>Realtime multiplayer</b><small>Room hingga 8 pemain melalui Supabase Realtime</small></div></div>
+            <div class="feature-line"><span class="feature-icon">⌖</span><div><b>Bot practice</b><small>Langsung main tanpa konfigurasi server</small></div></div>
+            <p id="onlineHint" class="hint">Mode latihan tersedia sekarang. Untuk online, isi konfigurasi Supabase di <code>src/config.js</code>.</p>
+          </article>
+          <article class="panel feature-panel">
+            <div class="panel-head"><span>FITUR ARENA</span><span class="tiny">V1.0</span></div>
+            <div class="feature-grid">
+              <div><b>03</b><small>KELAS</small></div><div><b>03</b><small>MODE</small></div><div><b>08</b><small>PLAYER/ROOM</small></div><div><b>∞</b><small>RESPAWN</small></div>
+            </div>
+            <ul class="feature-list"><li>Team Red vs Team Blue</li><li>Senjata rifle dan grenade cooldown</li><li>Minimap dan kill feed</li><li>Skor tim dan leaderboard</li><li>Power-up medkit dan speed boost</li><li>Kontrol keyboard + mobile touch</li></ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="game" class="game hidden">
+        <div class="gamebar">
+          <button id="leaveGame" class="btn small secondary">← LOBBY</button>
+          <div class="match-title"><b id="matchMode">TEAM DEATHMATCH</b><small id="roomLabel">PRACTICE MATCH</small></div>
+          <div class="match-score"><span class="red-score" id="redScore">0</span><small>—</small><span class="blue-score" id="blueScore">0</span></div>
+          <div class="timer" id="timer">05:00</div>
+        </div>
+        <div class="game-layout">
+          <div class="canvas-wrap">
+            <canvas id="arena" width="960" height="600"></canvas>
+            <div class="hud-top"><div class="hud-chip">HP <b id="hp">100</b></div><div class="hud-chip">AMMO <b id="ammo">30 / ∞</b></div><div class="hud-chip">K/D <b id="kd">0 / 0</b></div></div>
+            <div id="gameMessage" class="game-message">ELIMINATED</div>
+            <div class="mobile-controls">
+              <div id="joystick" class="joystick"><div id="stick" class="stick"></div></div>
+              <div class="mobile-actions"><button id="mobileReload">↻</button><button id="mobileGrenade">✹</button><button id="mobileFire">FIRE</button></div>
+            </div>
+          </div>
+          <aside class="side-panel">
+            <div class="panel">
+              <div class="panel-head"><span>MINIMAP</span><span class="tiny">LIVE</span></div>
+              <canvas id="minimap" width="220" height="140"></canvas>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><span>KILL FEED</span><span class="tiny">LATEST</span></div>
+              <div id="killFeed" class="kill-feed"><small>Belum ada eliminasi.</small></div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><span>LEADERBOARD</span><span class="tiny">MATCH</span></div>
+              <div id="leaderboard" class="leaderboard"></div>
+            </div>
+            <div class="panel controls-help"><div class="panel-head"><span>CONTROLS</span></div><p><kbd>WASD</kbd> Gerak</p><p><kbd>MOUSE</kbd> Arah tembak</p><p><kbd>CLICK</kbd> Tembak</p><p><kbd>R</kbd> Reload</p><p><kbd>G</kbd> Grenade</p><p><kbd>SHIFT</kbd> Sprint</p></div>
+          </aside>
+        </div>
+      </section>
+    </main>
+    <footer><span>WARZONE 2D © 2026</span><span>BUILT FOR THE ARENA</span></footer>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
